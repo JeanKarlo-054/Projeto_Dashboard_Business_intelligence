@@ -26,7 +26,6 @@ A diretoria de uma empresa híbrida de tecnologia (venda de produtos físicos e 
 
 Para consolidar as bases relacionais de clientes e pedidos, foi desenvolvida uma consulta mestra utilizando `INNER JOIN` e funções analíticas temporais (`STRFTIME` e `JULIANDAY`). A query abaixo agrupa os dados na origem, otimizando a performance do modelo de BI:
 
-```sql
 SELECT 
     clientes_portfolio.estado_cliente, 
     SUM(vendas_produtos.valor_venda) AS Total_gasto, 
