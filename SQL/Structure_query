@@ -1,0 +1,65 @@
+Structure:
+-- 1. TABELA DE CLIENTES
+CREATE TABLE clientes_portfolio (
+    id_cliente INT PRIMARY KEY,
+    nome_cliente VARCHAR(100),
+    estado_cliente VARCHAR(2), -- SP, RJ, MG, etc.
+    data_cadastro DATE
+);
+
+-- 2. TABELA DE VENDAS DE PRODUTOS FÍSICOS
+CREATE TABLE vendas_produtos (
+    id_venda INT PRIMARY KEY,
+    id_cliente INT,
+    produto VARCHAR(100),
+    categoria VARCHAR(50), -- 'Hardware', 'Periféricos', 'Mobile'
+    valor_venda DECIMAL(10,2),
+    data_pedido DATE,
+    data_entrega DATE
+);
+
+-- 3. TABELA DE ASSINATURAS (SERVIÇOS DIGITAIS)
+CREATE TABLE assinaturas_servicos (
+    id_assinatura INT PRIMARY KEY,
+    id_cliente INT,
+    plano VARCHAR(50), -- 'Mensal', 'Anual'
+    valor_mensal DECIMAL(10,2),
+    data_inicio DATE,
+    data_cancelamento DATE -- Se NULL, está ativo
+);
+
+-- INSERÇÃO DE DADOS TESTE DE ALTO NÍVEL
+INSERT INTO clientes_portfolio VALUES 
+(1, 'Rodrigo Silva', 'SP', '2025-01-10'),
+(2, 'Aline Justo', 'RJ', '2025-03-15'),
+(3, 'Ricardo Terra', 'MG', '2025-06-01'),
+(4, 'Mariana Faria', 'SP', '2025-08-20'),
+(5, 'Carlos Eduardo', 'PR', '2026-01-05'),
+(6, 'Beatriz Souza', 'SP', '2026-02-12');
+
+INSERT INTO vendas_produtos VALUES 
+(101, 1, 'Monitor Gamer 27 OLED', 'Hardware', 3500.00, '2025-01-15', '2025-01-18'),
+(102, 2, 'Mouse Sem Fio RGB', 'Periféricos', 250.00, '2025-04-02', '2025-04-09'),
+(103, 3, 'Teclado Mecânico Switch Blue', 'Periféricos', 450.00, '2025-06-10', '2025-06-12'),
+(104, 1, 'Smartphone Poco X6 Pro', 'Mobile', 2200.00, '2025-07-22', '2025-07-28'),
+(105, 4, 'Placa de Vídeo RTX 4060', 'Hardware', 2400.00, '2025-09-05', '2025-09-06'),
+(106, 5, 'Headset Gamer 7.1', 'Periféricos', 350.00, '2026-01-10', '2026-01-18'),
+(107, 6, 'Monitor Gamer 27 OLED', 'Hardware', 3500.00, '2026-03-01', '2026-03-03');
+
+INSERT INTO assinaturas_servicos VALUES 
+(501, 1, 'Anual', 49.90, '2025-01-15', NULL),
+(502, 3, 'Mensal', 59.90, '2025-06-10', '2025-08-10'),
+(503, 4, 'Anual', 49.90, '2025-09-01', NULL),
+(504, 5, 'Mensal', 59.90, '2026-01-06', '2026-03-06'),
+(505, 6, 'Anual', 49.90, '2026-03-01', NULL);
+
+
+--QUERY--
+
+SELECT 
+    clientes_portfolio.estado_cliente, 
+    SUM(vendas_produtos.valor_venda) AS Total_gasto, 
+    AVG(JULIANDAY(vendas_produtos.data_entrega) - JULIANDAY(vendas_produtos.data_pedido)) AS Media_dias_entrega
+FROM clientes_portfolio
+INNER JOIN vendas_produtos ON vendas_produtos.id_cliente = clientes_portfolio.id_cliente
+GROUP BY clientes_portfolio.estado_cliente;
